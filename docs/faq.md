@@ -59,6 +59,8 @@ Hardware RNG (Intel RDRAND, Apple Silicon TRNG)
 Network noise
 System timers -> Thread scheduling, OS events, context switches — all produce tiny unpredictable differences.
 
+hexdump -C /dev/urandom | head (we can see randomness but not the exact source events)
+
 Raw entropy is messy so OS applies strong transformations like -> SHA-256 , SHA-512 , ChaCha20 , AES-CTR , HMAC
 
 This makes randomness: uniform unpredictable secure
@@ -97,3 +99,36 @@ Ans : 1) OS keeps an entropy pool : KERNEL ENTROPY POOL
 
 Everything is local OS randomness.
 
+
+## What does bip 39 uses ( which is open source) !
+
+Ans :  In their codebase they have used the library called noble/hashes
+import { sha256 } from '@noble/hashes/sha256';
+import { sha512 } from '@noble/hashes/sha512';
+import { pbkdf2, pbkdf2Async } from '@noble/hashes/pbkdf2';
+import { randomBytes } from '@noble/hashes/utils';
+
+But internally even noble/hashes also uses crypto.getrandombytes() which is mentioned in their codebase 
+ref : https://github.com/paulmillr/noble-hashes/blob/main/src/utils.ts
+
+/** Cryptographically secure PRNG. Uses internal OS-level `crypto.getRandomValues`. */ (CSPRNG)
+export function randomBytes(bytesLength = 32): Uint8Array {
+  const cr = typeof globalThis === 'object' ? (globalThis as any).crypto : null;
+  if (typeof cr?.getRandomValues !== 'function')
+    throw new Error('crypto.getRandomValues must be defined');
+  return cr.getRandomValues(new Uint8Array(bytesLength));
+}
+
+
+
+## https://github.com/openssl/openssl/blob/master/providers/implementations/rands/seeding/rand_unix.c
+This file is th proof that randomness comes from OS...
+
+
+## What is OpenSSL ?????
+Ans : OpenSSL is a cryptography engine
+It is a huge open-source library that provides : encryption , key generation , digital signature , tls/ssl
+random number generator , secure hashing , DRBG
+
+OpenSSL is the cryptography library used by Node.js, Linux, macOS, Python, and many blockchains for secure randomness and encryption.
+OpenSSL is not an OS library. It’s a crypto library the OS ships with.

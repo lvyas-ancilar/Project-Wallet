@@ -140,5 +140,5 @@ CSPRNG = Cryptographically Secure Pseudo Random Number Generator
 ### some ref 
 https://soliditydeveloper.com/2019-06-23-randomness-blockchain
 https://docs.openssl.org/1.1.1/man3/RAND_bytes/#description (this is for my crypto module)
-https://docs.rs/rand/latest/rand/rngs/struct.ThreadRng.html
+https://docs.rs/rand/latest/rand/rngs/struct.ThreadRng.html (rand::thread_rng() , thread_rng())
 https://docs.rs/rand/latest/rand/rngs/struct.OsRng.html
